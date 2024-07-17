@@ -33,6 +33,18 @@ html, body {
     transition: transform 0.1s; /* Smooth movement */
 }
 
+@media screen and (max-width: 1200px) {
+    #logo img {
+        width: 250pt;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #logo img {
+        width: 200pt;
+    }
+}
+
 #social-media {
     display: flex;
     justify-content: center;
@@ -61,4 +73,14 @@ footer p {
     font-size: 12px; /* Maintain the font size */
     margin: 0; /* Remove margin */
     color: rgb(53, 53, 53);
+}
+
+@media screen and (max-width: 768px) {
+    #logo img {
+        width: 200pt;
+    }
+
+    #social-media img {
+        width: 18px; /* Smaller icons for phone screens */
+    }
 }
