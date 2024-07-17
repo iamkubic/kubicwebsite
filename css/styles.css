@@ -1,0 +1,189 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Logo */
+#logo a {
+    display: block;
+    margin: 10px 0; /* Logo margin */
+}
+
+#logo a img {
+    width: auto; /* Adjust the width as needed */
+    height: 200pt; /* Maintain aspect ratio */
+}
+
+
+/* Navigation */
+nav {
+    font-family: 'Merriweather', serif;
+    margin: 10px 0; /* Margin below navbar */
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold; /* Make the text bold */
+    font-size: 18px; /* Increase font size */
+}
+
+/* Social Media */
+#social-media {
+    margin: 2px 0; /* Reduced margin for less space */
+}
+
+#social-media a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: black;
+}
+
+#social-media img {
+    width: 22px; /* Set desired width */
+    height: auto; /* Maintain aspect ratio */
+    margin: 0 10px; /* Adjust spacing between icons */
+}
+
+
+/* Newest Release */
+#newest-release {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 200px 0; /* Margin for newest release */
+}
+
+.release-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+#newest-release img {
+    width: 100%;
+    max-width: 700px;
+    height: auto;
+    border-radius: 10px; /* Rounded corners for album art */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow effect */
+}
+
+.release-info {
+    max-width: 400px;
+    text-align: left; /* Align text to the left */
+}
+
+.album-title {
+    margin: 0;
+    font-size: 3em; /* Increased font size */
+    color: #333; /* Darker text color */
+    text-transform: none; /* Uppercase for emphasis */
+    font-family: 'Playfair Display', serif; /* Eye-catching font */
+}
+
+.out-now {
+    font-size: 1.2em; /* Slightly reduced size */
+    color: rgb(53, 53, 53); /* Greyish black */
+    margin: 5px 0; /* Space above and below */
+    font-weight: normal; /* Remove bold */
+}
+
+.release-date {
+    margin-top: 10px; /* Space above the release date */
+    font-size: 1.2em; /* Slightly larger font size */
+    color: #666; /* Lighter color for the release date */
+}
+
+.release-text {
+    font-weight: bold; /* Bold for the label */
+    font-size: 0.8em; /* Smaller font size */
+}
+
+.date {
+    font-style: italic; /* Italic for the date */
+    font-size: 0.8em; /* Smaller font size */
+}
+
+/* Button styles */
+.release-info button {
+    margin-top: 20px; /* Increased space above the button */
+    padding: 12px 24px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em; /* Increased font size */
+    border-radius: 5px; /* Rounded button corners */
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.release-info button:hover {
+    background-color: #555; /* Darker on hover */
+}
+
+/* Footer */
+footer {
+    position: absolute; /* Position the footer absolutely */
+    bottom: 0; /* Stick it to the bottom */
+    left: 0; /* Align to the left */
+    right: 0; /* Align to the right */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    font-size: 10px; /* Slightly smaller font */
+    font-family: 'Merriweather', serif;
+    font-weight: bold; /* Keep the text bold */
+    color: rgb(53, 53, 53); /* Set color to RGB (53, 53, 53) */
+    margin: 0; /* Remove any margin */
+}
+
+/* Ensure no extra padding at the bottom */
+body {
+    padding-bottom: 0; /* Set to 0 to avoid extra space */
+}
+
+footer a {
+    text-decoration: none;
+    color: rgb(53, 53, 53); /* Set link color to match footer text */
+    margin: 0 5px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+    color: black; /* Change color on hover */
+}
+
+footer p {
+    margin: 0 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .release-content {
+        flex-direction: column;
+    }
+
+    .release-info {
+        text-align: center;
+    }
+}
