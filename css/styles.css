@@ -216,17 +216,17 @@ nav a:hover {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 8px 20px; /* vertical gap, horizontal gap */
+        gap: 10px 20px; /* vertical, horizontal */
     }
 
     nav a {
         flex: 0 0 auto;
     }
 
+    /* Ensure About and Contact are on the same line */
     nav a:nth-child(4),
     nav a:nth-child(5) {
-        width: 100%;
-        text-align: center;
+        width: auto;
     }
 }
 

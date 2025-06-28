@@ -6,30 +6,69 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const isMobile = window.matchMedia("(pointer: coarse)").matches;
-    let isDragging = false;
+    let usingGyro = false;
+
+    function handleParallax(x, y) {
+        logo.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    function enableGyro() {
+        window.addEventListener('deviceorientation', (event) => {
+            const gamma = event.gamma || 0;
+            const beta = event.beta || 0;
+            const offsetX = gamma / 2;
+            const offsetY = beta / 4;
+            handleParallax(offsetX, offsetY);
+        });
+        usingGyro = true;
+    }
 
     if (isMobile) {
-        // Mobile: tap-and-drag
-        logo.addEventListener('touchstart', () => {
-            isDragging = true;
-        });
+        if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+            // iOS
+            if (localStorage.getItem('gyroPermission') !== 'granted') {
+                const allow = confirm("Allow motion for an interactive experience?");
+                if (allow) {
+                    DeviceOrientationEvent.requestPermission()
+                        .then(response => {
+                            if (response === 'granted') {
+                                localStorage.setItem('gyroPermission', 'granted');
+                                enableGyro();
+                            }
+                        })
+                        .catch(console.error);
+                }
+            } else {
+                enableGyro();
+            }
+        } else {
+            // Android or non-permission systems
+            enableGyro();
+        }
 
-        logo.addEventListener('touchmove', (e) => {
-            if (!isDragging || e.touches.length !== 1) return;
-            const touch = e.touches[0];
-            const rect = logo.getBoundingClientRect();
-            const offsetX = (touch.clientX - (rect.left + rect.width / 2)) / 15;
-            const offsetY = (touch.clientY - (rect.top + rect.height / 2)) / 15;
-            logo.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-        });
+        if (!usingGyro) {
+            // Fallback to tap-and-drag
+            let isDragging = false;
+            logo.addEventListener('touchstart', () => {
+                isDragging = true;
+            });
 
-        logo.addEventListener('touchend', () => {
-            isDragging = false;
-            logo.style.transform = `translate(0px, 0px)`;
-        });
+            logo.addEventListener('touchmove', (e) => {
+                if (!isDragging || e.touches.length !== 1) return;
+                const touch = e.touches[0];
+                const rect = logo.getBoundingClientRect();
+                const offsetX = (touch.clientX - (rect.left + rect.width / 2)) / 15;
+                const offsetY = (touch.clientY - (rect.top + rect.height / 2)) / 15;
+                handleParallax(offsetX, offsetY);
+            });
 
+            logo.addEventListener('touchend', () => {
+                isDragging = false;
+                handleParallax(0, 0);
+            });
+        }
     } else {
-        // Desktop: mousemove
+        // Desktop: mousemove parallax
         document.addEventListener('mousemove', (event) => {
             const { clientX, clientY } = event;
             const logoRect = logo.getBoundingClientRect();
@@ -37,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const logoCenterY = logoRect.top + logoRect.height / 2;
             const offsetX = (clientX - logoCenterX) / 100;
             const offsetY = (clientY - logoCenterY) / 110;
-            logo.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+            handleParallax(offsetX, offsetY);
         });
     }
 });
