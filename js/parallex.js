@@ -14,11 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function enableGyro() {
         window.addEventListener('deviceorientation', (event) => {
-            const gamma = event.gamma || 0;
-            const beta = event.beta || 0;
-            const offsetX = gamma / 2;
-            const offsetY = beta / 4;
-            handleParallax(offsetX, offsetY);
+            const gamma = event.gamma;
+            const beta = event.beta;
+            if (gamma !== null && beta !== null) {
+                const offsetX = gamma / 2;   // tilt left-right
+                const offsetY = beta / 4;    // tilt forward-back
+                handleParallax(offsetX, offsetY);
+            }
         });
         usingGyro = true;
     }
@@ -27,32 +29,33 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
             // iOS
             if (localStorage.getItem('gyroPermission') !== 'granted') {
-                const allow = confirm("Allow motion for an interactive experience?");
-                if (allow) {
+                document.body.addEventListener('click', function requestGyroPermission() {
                     DeviceOrientationEvent.requestPermission()
                         .then(response => {
                             if (response === 'granted') {
                                 localStorage.setItem('gyroPermission', 'granted');
                                 enableGyro();
+                            } else {
+                                console.log("Gyro permission denied.");
                             }
                         })
-                        .catch(console.error);
-                }
+                        .catch(console.error)
+                        .finally(() => {
+                            document.body.removeEventListener('click', requestGyroPermission);
+                        });
+                });
             } else {
                 enableGyro();
             }
         } else {
-            // Android or non-permission systems
+            // Android or non-permission devices
             enableGyro();
         }
 
         if (!usingGyro) {
-            // Fallback to tap-and-drag
+            // Fallback: tap-and-drag
             let isDragging = false;
-            logo.addEventListener('touchstart', () => {
-                isDragging = true;
-            });
-
+            logo.addEventListener('touchstart', () => { isDragging = true; });
             logo.addEventListener('touchmove', (e) => {
                 if (!isDragging || e.touches.length !== 1) return;
                 const touch = e.touches[0];
@@ -61,14 +64,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const offsetY = (touch.clientY - (rect.top + rect.height / 2)) / 15;
                 handleParallax(offsetX, offsetY);
             });
-
             logo.addEventListener('touchend', () => {
                 isDragging = false;
                 handleParallax(0, 0);
             });
         }
     } else {
-        // Desktop: mousemove parallax
+        // Desktop: mousemove
         document.addEventListener('mousemove', (event) => {
             const { clientX, clientY } = event;
             const logoRect = logo.getBoundingClientRect();
