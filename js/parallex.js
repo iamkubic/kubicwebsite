@@ -50,13 +50,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function isMobile() {
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    function isIOS() {
+        return /iPhone|iPad|iPod/i.test(navigator.userAgent);
     }
 
-    if (isMobile()) {
-        enableTouchDrag();
+    function isAndroid() {
+        return /Android/i.test(navigator.userAgent);
+    }
 
+    if (isIOS()) {
         if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
             if (sessionStorage.getItem('gyroPermissionGranted') === 'true') {
                 enableGyro();
@@ -77,8 +79,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         } else {
-            enableGyro(); // Android auto
+            enableTouchDrag(); // fallback if API not present
         }
+    } else if (isAndroid()) {
+        enableTouchDrag();
+        if (motionDiv) motionDiv.style.display = 'none';
     } else {
         enableMouseMove();
         if (motionDiv) motionDiv.style.display = 'none';
