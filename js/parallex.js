@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const logo = document.querySelector('#logo img');
     if (!logo) return;
 
-    const isMobile = window.matchMedia("(pointer: coarse)").matches;
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     const motionDiv = document.getElementById('motion-permission');
     const allowBtn = document.getElementById('allow-motion-btn');
 
@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (isMobile && typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+        // Only on iOS devices
         if (localStorage.getItem('gyroPermission') !== 'granted') {
             motionDiv.style.display = 'flex';
             allowBtn.addEventListener('click', () => {
@@ -41,10 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
             enableGyro();
         }
     } else if (isMobile) {
-        // Android and fallback
+        // Android and other mobile, enable gyro directly
         enableGyro();
     } else {
-        // Desktop: mouse parallax
+        // Desktop only: mousemove parallax
         document.addEventListener('mousemove', (event) => {
             const { clientX, clientY } = event;
             const logoRect = logo.getBoundingClientRect();
@@ -56,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Tap-and-drag fallback
+    // Tap-and-drag fallback on all mobile devices
     if (isMobile) {
         let isDragging = false;
         logo.addEventListener('touchstart', () => { isDragging = true; });
