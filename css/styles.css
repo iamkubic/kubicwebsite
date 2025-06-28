@@ -19,9 +19,7 @@ html, body {
     font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
-
 
 #content {
     display: flex;
@@ -79,6 +77,7 @@ html, body {
 footer {
     text-align: center;
     padding: 15px 0;
+    margin-top: auto;
 }
 
 footer p {
@@ -126,20 +125,22 @@ nav a:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 10vh;
-    gap: 30px;
+    justify-content: center;
+    flex-grow: 1;
+    gap: 20px;
 }
+
 
 .listen-link {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     font-family: 'Merriweather', serif;
     font-weight: 700;
     font-size: 20px;
     color: #111;
     text-decoration: none;
-    transition: color 0.2s, transform 0.2s;
+    transition: transform 0.2s, color 0.2s;
 }
 
 .listen-link img {
@@ -152,8 +153,9 @@ nav a:hover {
     color: #000;
 }
 
-#listen-links hr {
+.listen-separator {
     width: 180px;
-    border: none;
-    border-top: 1px solid #ccc;
+    height: 1px;
+    background-color: #aaa;
 }
+
