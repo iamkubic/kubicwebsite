@@ -19,9 +19,9 @@ html, body {
     font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: center;
 }
+
 
 #content {
     display: flex;
@@ -98,3 +98,63 @@ footer p {
         width: 18px; /* Smaller icons for phone screens */
     }
 }
+
+nav {
+    width: 100%;
+    text-align: center;
+    margin-top: 7vh;
+    margin-bottom: 3vh;
+}
+
+nav a {
+    margin: 0 16px;
+    text-decoration: none;
+    color: #111;
+    font-family: 'Merriweather', serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    transition: color 0.2s, transform 0.2s;
+}
+
+nav a:hover {
+    color: #000;
+    transform: translateY(-2px);
+}
+
+#listen-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 5vh;
+    gap: 20px;
+}
+
+.listen-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Merriweather', serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: #111;
+    text-decoration: none;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.listen-link img {
+    width: 28px;
+    height: auto;
+}
+
+.listen-link:hover {
+    transform: translateY(-2px);
+    color: #000;
+}
+
+#listen-links hr {
+    width: 150px;
+    border: none;
+    border-top: 1px solid #333;
+}
+
