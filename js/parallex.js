@@ -58,19 +58,24 @@ document.addEventListener('DOMContentLoaded', () => {
         enableTouchDrag();
 
         if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
-            // Always request permission on page load, ignoring localStorage
-            motionDiv.style.display = 'flex';
-            allowBtn.addEventListener('click', () => {
-                DeviceOrientationEvent.requestPermission().then(response => {
-                    if (response === 'granted') {
-                        enableGyro();
-                    }
-                    motionDiv.style.display = 'none';
-                }).catch(err => {
-                    console.error(err);
-                    motionDiv.style.display = 'none';
+            if (sessionStorage.getItem('gyroPermissionGranted') === 'true') {
+                enableGyro();
+                if (motionDiv) motionDiv.style.display = 'none';
+            } else {
+                motionDiv.style.display = 'flex';
+                allowBtn.addEventListener('click', () => {
+                    DeviceOrientationEvent.requestPermission().then(response => {
+                        if (response === 'granted') {
+                            enableGyro();
+                            sessionStorage.setItem('gyroPermissionGranted', 'true');
+                        }
+                        motionDiv.style.display = 'none';
+                    }).catch(err => {
+                        console.error(err);
+                        motionDiv.style.display = 'none';
+                    });
                 });
-            });
+            }
         } else {
             enableGyro(); // Android auto
         }
