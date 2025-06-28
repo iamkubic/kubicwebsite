@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const logo = document.querySelector('#logo img');
     if (!logo) return;
 
-    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     const motionDiv = document.getElementById('motion-permission');
     const allowBtn = document.getElementById('allow-motion-btn');
 
@@ -22,43 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (isMobile && typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
-        // Only on iOS devices
-        if (localStorage.getItem('gyroPermission') !== 'granted') {
-            motionDiv.style.display = 'flex';
-            allowBtn.addEventListener('click', () => {
-                DeviceOrientationEvent.requestPermission().then(response => {
-                    if (response === 'granted') {
-                        localStorage.setItem('gyroPermission', 'granted');
-                        enableGyro();
-                    }
-                    motionDiv.style.display = 'none';
-                }).catch(err => {
-                    console.error(err);
-                    motionDiv.style.display = 'none';
-                });
-            });
-        } else {
-            enableGyro();
-        }
-    } else if (isMobile) {
-        // Android and other mobile, enable gyro directly
-        enableGyro();
-    } else {
-        // Desktop only: mousemove parallax
-        document.addEventListener('mousemove', (event) => {
-            const { clientX, clientY } = event;
-            const logoRect = logo.getBoundingClientRect();
-            const logoCenterX = logoRect.left + logoRect.width / 2;
-            const logoCenterY = logoRect.top + logoRect.height / 2;
-            const offsetX = (clientX - logoCenterX) / 100;
-            const offsetY = (clientY - logoCenterY) / 110;
-            handleParallax(offsetX, offsetY);
-        });
-    }
-
     // Tap-and-drag fallback on all mobile devices
-    if (isMobile) {
+    function enableTouchDrag() {
         let isDragging = false;
         logo.addEventListener('touchstart', () => { isDragging = true; });
         logo.addEventListener('touchmove', (e) => {
@@ -74,4 +38,65 @@ document.addEventListener('DOMContentLoaded', () => {
             handleParallax(0, 0);
         });
     }
+
+    // Mouse movement for desktop
+    function enableMouseMove() {
+        document.addEventListener('mousemove', (event) => {
+            const { clientX, clientY } = event;
+            const logoRect = logo.getBoundingClientRect();
+            const logoCenterX = logoRect.left + logoRect.width / 2;
+            const logoCenterY = logoRect.top + logoRect.height / 2;
+            const offsetX = (clientX - logoCenterX) / 100;
+            const offsetY = (clientY - logoCenterY) / 110;
+            handleParallax(offsetX, offsetY);
+        });
+    }
+
+    // Detection routine to prevent prompt on desktop
+    const testDeviceOrientation = () => {
+        let detected = false;
+
+        function testHandler(event) {
+            if (event.gamma !== null && event.beta !== null) {
+                detected = true;
+                window.removeEventListener('deviceorientation', testHandler);
+                // If iOS with permission API
+                if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+                    if (localStorage.getItem('gyroPermission') !== 'granted') {
+                        motionDiv.style.display = 'flex';
+                        allowBtn.addEventListener('click', () => {
+                            DeviceOrientationEvent.requestPermission().then(response => {
+                                if (response === 'granted') {
+                                    localStorage.setItem('gyroPermission', 'granted');
+                                    enableGyro();
+                                }
+                                motionDiv.style.display = 'none';
+                            }).catch(err => {
+                                console.error(err);
+                                motionDiv.style.display = 'none';
+                            });
+                        });
+                    } else {
+                        enableGyro();
+                    }
+                } else {
+                    enableGyro(); // Android and others
+                }
+            }
+        }
+
+        // Listen briefly to detect real device orientation support
+        window.addEventListener('deviceorientation', testHandler);
+
+        // If no detection after 1 second, fallback to mouse
+        setTimeout(() => {
+            if (!detected) {
+                window.removeEventListener('deviceorientation', testHandler);
+                enableMouseMove();
+            }
+        }, 1000);
+    };
+
+    testDeviceOrientation();
+    enableTouchDrag();
 });
