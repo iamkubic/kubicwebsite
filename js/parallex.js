@@ -2,18 +2,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const logo = document.querySelector('#logo img');
 
     function handleParallax(x, y) {
-        const offsetX = x / 50; // Adjust for sensitivity
-        const offsetY = y / 50;
-        logo.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        logo.style.transform = `translate(${x}px, ${y}px)`;
     }
 
-    if (window.DeviceOrientationEvent) {
-        window.addEventListener('deviceorientation', (event) => {
-            const gamma = event.gamma || 0; // left-right tilt
-            const beta = event.beta || 0;   // front-back tilt
-            handleParallax(gamma, beta);
-        }, true);
+    let isDragging = false;
+
+    if (window.matchMedia("(pointer: coarse)").matches) {
+        // Mobile: Tap-and-drag
+        logo.addEventListener('touchstart', () => {
+            isDragging = true;
+        });
+
+        logo.addEventListener('touchmove', (e) => {
+            if (isDragging && e.touches.length === 1) {
+                const touch = e.touches[0];
+                const rect = logo.getBoundingClientRect();
+                const offsetX = (touch.clientX - (rect.left + rect.width / 2)) / 15;
+                const offsetY = (touch.clientY - (rect.top + rect.height / 2)) / 15;
+                handleParallax(offsetX, offsetY);
+            }
+        });
+
+        logo.addEventListener('touchend', () => {
+            isDragging = false;
+            handleParallax(0, 0);
+        });
+
     } else {
+        // Desktop: Mouse move
         document.addEventListener('mousemove', (event) => {
             const { clientX, clientY } = event;
             const logoRect = logo.getBoundingClientRect();
@@ -21,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const logoCenterY = logoRect.top + logoRect.height / 2;
             const offsetX = (clientX - logoCenterX) / 100;
             const offsetY = (clientY - logoCenterY) / 110;
-            logo.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+            handleParallax(offsetX, offsetY);
         });
     }
 });
