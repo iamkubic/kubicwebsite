@@ -180,6 +180,15 @@ nav a:hover {
     gap: 30px;
 }
 
+@media screen and (max-width: 768px) {
+    #contact-content {
+        align-items: center;
+        padding-left: 0;
+        text-align: center;
+    }
+}
+
+
 .contact-section {
     font-family: 'Merriweather', serif;
     color: #111;
