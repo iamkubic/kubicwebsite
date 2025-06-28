@@ -55,28 +55,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (isMobile()) {
+        enableTouchDrag();
+
         if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
-            if (localStorage.getItem('gyroPermission') === 'granted') {
-                enableGyro();
-            } else {
-                motionDiv.style.display = 'flex';
-                allowBtn.addEventListener('click', () => {
-                    DeviceOrientationEvent.requestPermission().then(response => {
-                        if (response === 'granted') {
-                            localStorage.setItem('gyroPermission', 'granted');
-                            enableGyro();
-                        }
-                        motionDiv.style.display = 'none';
-                    }).catch(err => {
-                        console.error(err);
-                        motionDiv.style.display = 'none';
-                    });
+            // Always request permission on page load, ignoring localStorage
+            motionDiv.style.display = 'flex';
+            allowBtn.addEventListener('click', () => {
+                DeviceOrientationEvent.requestPermission().then(response => {
+                    if (response === 'granted') {
+                        enableGyro();
+                    }
+                    motionDiv.style.display = 'none';
+                }).catch(err => {
+                    console.error(err);
+                    motionDiv.style.display = 'none';
                 });
-            }
+            });
         } else {
             enableGyro(); // Android auto
         }
-        enableTouchDrag();
     } else {
         enableMouseMove();
         if (motionDiv) motionDiv.style.display = 'none';
